@@ -13,17 +13,33 @@ import SimplexNoise from 'https://cdn.skypack.dev/simplex-noise@3.0.0';
 const scene = new Scene();
 scene.background = new Color("#FFEECC");
 
-const camera = new PerspectiveCamera(45, innerWidth / innerHeight, 0.1, 1000);
+const sizes = {
+    width: window.innerWidth,
+    height: window.innerHeight
+};
+
+const camera = new PerspectiveCamera(45, sizes.width / sizes.height, 0.1, 1000);
 camera.position.set(-17, 31, 33);
 
 const renderer = new WebGLRenderer({ antialias: true });
-renderer.setSize(innerWidth, innerHeight);
+renderer.setSize(sizes.width, sizes.height);
 renderer.toneMapping = ACESFilmicToneMapping;
 renderer.outputEncoding = sRGBEncoding;
 renderer.physicallyCorrectLights = true;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
+
+window.addEventListener('resize', () =>
+{
+    sizes.width = window.innerWidth;
+    sizes.height = window.innerHeight;
+
+    camera.aspect = sizes.width / sizes.height;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(sizes.width, sizes.height);
+});
 
 const light = new PointLight(new Color("#FFCB8E").convertSRGBToLinear().convertSRGBToLinear(), 80, 200);
 light.position.set(10, 20, 10);
